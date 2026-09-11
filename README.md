@@ -1,10 +1,8 @@
 # Annotated Baby Rudin
 
-https://uselesstechjunks.github.io/annotated_baby_rudin/index.html
+This [blog](https://uselesstechjunks.github.io/annotated_baby_rudin/index.html) contains my filler notes for Principles of Mathematical Analysis by Walter D. Rudin.
 
-My filler notes for Baby Rudin (Principles of Mathematical Analysis by Walter D. Rudin)
-
-## Notes enabling GitHub Pages
+## How to Enable GitHub Pages?
 ```
 Settings → Pages
 Under Build and deployment:
