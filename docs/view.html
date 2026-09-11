@@ -33,40 +33,10 @@
   >
     ☀ Light
   </button>
-  
   <main id="content">
     <div class="status">Loading…</div>
   </main>
-
-  <script>
-    (function () {
-      const button = document.getElementById("theme-toggle");
-      function setTheme(theme) {
-        if (theme === "light") {
-          document.documentElement.classList.add("light");
-        } else {
-          document.documentElement.classList.remove("light");
-        }
-        localStorage.setItem("theme", theme);
-        button.textContent =
-          theme === "light" ? "☾ Dark" : "☀ Light";
-        button.setAttribute(
-          "aria-label",
-          theme === "light"
-            ? "Switch to dark mode"
-            : "Switch to light mode"
-        );
-      }
-      const savedTheme = localStorage.getItem("theme");
-      setTheme(savedTheme === "light" ? "light" : "dark");
-      button.addEventListener("click", function () {
-        const isLight =
-          document.documentElement.classList.contains("light");
-        setTheme(isLight ? "dark" : "light");
-      });
-    })();
-  </script>
-
+  <script src="theme.js"></script>
   <script type="module">
     const content = document.getElementById("content");
     /*
