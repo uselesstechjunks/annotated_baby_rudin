@@ -46,6 +46,36 @@
     <div class="status">Loading…</div>
   </main>
 
+  <script>
+    const savedTheme = localStorage.getItem("theme");
+  
+    if (savedTheme === "light") {
+      document.documentElement.classList.add("light");
+    }
+  
+    const themeToggle = document.getElementById("theme-toggle");
+  
+    function updateThemeButton() {
+      const isLight = document.documentElement.classList.contains("light");
+  
+      themeToggle.textContent = isLight ? "☾ Dark" : "☀ Light";
+      themeToggle.setAttribute(
+        "aria-label",
+        isLight ? "Switch to dark mode" : "Switch to light mode"
+      );
+    }
+  
+    updateThemeButton();
+  
+    themeToggle.addEventListener("click", () => {
+      const isLight = document.documentElement.classList.toggle("light");
+  
+      localStorage.setItem("theme", isLight ? "light" : "dark");
+  
+      updateThemeButton();
+    });
+  </script>
+
   <script type="module">
 
     const content = document.getElementById("content");
