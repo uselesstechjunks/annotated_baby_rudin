@@ -1,4 +1,3 @@
-```css
 :root {
   --bg: #000;
   --text: #f2f2f2;
@@ -237,4 +236,3 @@ html:not(.light) body {
   background: black !important;
   color: white !important;
 }
-```
