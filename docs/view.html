@@ -9,7 +9,19 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- MathJax -->
+  <!--
+    Configure MathJax before loading it.
+
+    This enables both the familiar Markdown-style delimiters:
+
+        $...$       inline mathematics
+        $$...$$     display mathematics
+
+    and the LaTeX delimiters:
+
+        \(...\)     inline mathematics
+        \[...\]     display mathematics
+  -->
 
   <script>
     window.MathJax = {
@@ -26,6 +38,8 @@
     };
   </script>
 
+  <!-- MathJax -->
+
   <script
     defer
     src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js">
@@ -34,24 +48,55 @@
 </head>
 
 <body>
+
   <main id="content">
     <div class="status">Loading…</div>
   </main>
 
   <script type="module">
+
+    /*
+     * ------------------------------------------------------------
+     * Configuration
+     * ------------------------------------------------------------
+     */
+
     const content = document.getElementById("content");
+
+
+    /*
+     * ------------------------------------------------------------
+     * Determine which Markdown file to display
+     * ------------------------------------------------------------
+     *
+     * Examples:
+     *
+     *   view.html
+     *   view.html?file=chapter1.md
+     *   view.html?file=chapter2.md
+     */
 
     function getFileName() {
       const params = new URLSearchParams(window.location.search);
+
       return params.get("file") || "READLIST.md";
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * Error handling
+     * ------------------------------------------------------------
+     */
+
     function showError(message, error = null) {
+
       console.error(message, error);
 
       content.innerHTML = "";
 
       const element = document.createElement("div");
+
       element.className = "error";
 
       element.textContent =
@@ -62,13 +107,18 @@
       content.appendChild(element);
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * Load Marked
+     * ------------------------------------------------------------
+     *
+     * Marked is loaded as an ES module rather than through a
+     * separate <script> tag. This avoids script-order races.
+     */
+
     async function loadMarked() {
-      /*
-       * Load marked directly as an ES module.
-       *
-       * This avoids relying on a separate <script> tag having
-       * initialized window.marked before our code runs.
-       */
+
       const module = await import(
         "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js"
       );
@@ -76,82 +126,203 @@
       return module.marked;
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * Load Markdown
+     * ------------------------------------------------------------
+     */
+
     async function loadMarkdown(fileName) {
-      const url = `content/${encodeURIComponent(fileName)}`;
+
+      const url =
+        `content/${encodeURIComponent(fileName)}`;
 
       const response = await fetch(url);
 
       if (!response.ok) {
+
         throw new Error(
-          `Could not load "${fileName}" (${response.status} ${response.statusText})`
+          `Could not load "${fileName}" ` +
+          `(${response.status} ${response.statusText})`
         );
       }
 
       return response.text();
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * Markdown → HTML
+     * ------------------------------------------------------------
+     */
+
     function renderMarkdown(marked, markdown) {
+
       return marked.parse(markdown, {
         gfm: true,
         breaks: false
       });
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * MathJax
+     * ------------------------------------------------------------
+     *
+     * MathJax 4 performs asynchronous startup work.
+     *
+     * Waiting for startup.promise guarantees that
+     * typesetPromise is available before we call it.
+     */
+
     async function typesetMath(element) {
+
       if (!window.MathJax) {
-        throw new Error("MathJax failed to load.");
+
+        throw new Error(
+          "MathJax failed to load."
+        );
       }
 
-      /*
-       * MathJax 4 performs some initialization asynchronously.
-       * Wait for it before asking it to typeset the page.
-       */
+
       if (window.MathJax.startup?.promise) {
+
         await window.MathJax.startup.promise;
       }
 
-      if (typeof window.MathJax.typesetPromise !== "function") {
+
+      if (
+        typeof window.MathJax.typesetPromise !== "function"
+      ) {
+
         throw new Error(
           "MathJax loaded, but typesetPromise is unavailable."
         );
       }
 
+
       await window.MathJax.typesetPromise([element]);
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * Page title
+     * ------------------------------------------------------------
+     *
+     * Use the first Markdown H1 as the browser tab title.
+     */
+
     function updateTitle() {
-      const heading = content.querySelector("h1");
+
+      const heading =
+        content.querySelector("h1");
+
 
       if (heading) {
-        document.title = `${heading.textContent.trim()} — Notes`;
+
+        document.title =
+          `${heading.textContent.trim()} — Notes`;
       }
     }
 
+
+    /*
+     * ------------------------------------------------------------
+     * Back to contents navigation
+     * ------------------------------------------------------------
+     */
+
+    function addContentsLink() {
+
+      const nav =
+        document.createElement("nav");
+
+      nav.className =
+        "chapter-nav";
+
+      nav.setAttribute(
+        "aria-label",
+        "Chapter navigation"
+      );
+
+
+      const link =
+        document.createElement("a");
+
+      link.href = "index.html";
+
+      link.textContent =
+        "← Back to contents";
+
+
+      nav.appendChild(link);
+
+      content.appendChild(nav);
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Main rendering pipeline
+     * ------------------------------------------------------------
+     */
+
     async function main() {
-      const fileName = getFileName();
+
+      const fileName =
+        getFileName();
+
 
       try {
-        /*
-         * Load both dependencies and the Markdown.
-         */
-        const [marked, markdown] = await Promise.all([
-          loadMarked(),
-          loadMarkdown(fileName)
-        ]);
 
         /*
-         * Convert Markdown → HTML.
+         * Load Marked and the Markdown file in parallel.
          */
-        content.innerHTML = renderMarkdown(marked, markdown);
+
+        const [marked, markdown] =
+          await Promise.all([
+            loadMarked(),
+            loadMarkdown(fileName)
+          ]);
+
+
+        /*
+         * Markdown → HTML
+         */
+
+        content.innerHTML =
+          renderMarkdown(marked, markdown);
+
+
+        /*
+         * Update browser title from the H1.
+         */
 
         updateTitle();
 
+
         /*
-         * HTML → rendered mathematics.
+         * HTML → rendered mathematics
          */
+
         await typesetMath(content);
 
+
+        /*
+         * Add navigation after the chapter content.
+         *
+         * This means the link appears at the very bottom
+         * of every chapter automatically.
+         */
+
+        addContentsLink();
+
       } catch (error) {
+
         showError(
           `Unable to render "${fileName}".`,
           error
@@ -159,7 +330,13 @@
       }
     }
 
+
+    /*
+     * Start rendering.
+     */
+
     main();
+
   </script>
 
 </body>
