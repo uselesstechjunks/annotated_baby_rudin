@@ -6,21 +6,20 @@
     document.documentElement.classList.add("light");
   }
 
-  window.addEventListener("DOMContentLoaded", () => {
-    const themeToggle = document.getElementById("theme-toggle");
+  function initThemeToggle() {
+    const button = document.getElementById("theme-toggle");
 
-    if (!themeToggle) {
+    if (!button) {
       return;
     }
 
-    function updateThemeButton() {
+    function updateButton() {
       const isLight =
         document.documentElement.classList.contains("light");
 
-      themeToggle.textContent =
-        isLight ? "☾ Dark" : "☀ Light";
+      button.textContent = isLight ? "☾ Dark" : "☀ Light";
 
-      themeToggle.setAttribute(
+      button.setAttribute(
         "aria-label",
         isLight
           ? "Switch to dark mode"
@@ -28,24 +27,31 @@
       );
     }
 
-    updateThemeButton();
+    updateButton();
 
-    themeToggle.addEventListener("click", () => {
+    button.addEventListener("click", function () {
       const isLight =
         document.documentElement.classList.contains("light");
 
-      document.documentElement.classList.toggle(
-        "light",
-        !isLight
-      );
+      if (isLight) {
+        document.documentElement.classList.remove("light");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.add("light");
+        localStorage.setItem("theme", "light");
+      }
 
-      localStorage.setItem(
-        "theme",
-        !isLight ? "light" : "dark"
-      );
-
-      updateThemeButton();
+      updateButton();
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initThemeToggle
+    );
+  } else {
+    initThemeToggle();
+  }
 })();
 ```
