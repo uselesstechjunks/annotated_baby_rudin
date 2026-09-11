@@ -1,66 +1,58 @@
+```css
 :root {
---bg: #000;
---text: #f2f2f2;
---text-muted: #999;
---text-dim: #666;
---border: #252525;
---code-bg: #111;
---link: #fff;
---link-hover: #aaa;
-
---content-width: 820px;
---font-body:
--apple-system,
-BlinkMacSystemFont,
-"Segoe UI",
-Helvetica,
-Arial,
-sans-serif;
---font-mono:
-"SFMono-Regular",
-Consolas,
-"Liberation Mono",
-Menlo,
-monospace;
+  --bg: #000;
+  --text: #f2f2f2;
+  --text-muted: #999;
+  --text-dim: #666;
+  --border: #252525;
+  --code-bg: #111;
+  --link: #fff;
+  --link-hover: #aaa;
 }
 
-/* --------------------------------------------------
-Base
--------------------------------------------------- */
+html.light {
+  --bg: #fff;
+  --text: #111;
+  --text-muted: #666;
+  --text-dim: #999;
+  --border: #ddd;
+  --code-bg: #f5f5f5;
+  --link: #111;
+  --link-hover: #666;
+}
+
+* {
+  box-sizing: border-box;
+}
 
 html {
-background: var(--bg);
-color-scheme: dark;
+  background: var(--bg);
+  color: var(--text);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 body {
-margin: 0;
-padding: 0;
-
-background: var(--bg);
-color: var(--text);
-
-font-family: var(--font-body);
-font-size: 17px;
-line-height: 1.75;
-
--webkit-font-smoothing: antialiased;
-text-rendering: optimizeLegibility;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Helvetica,
+    Arial,
+    sans-serif;
+  line-height: 1.7;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-
-/* --------------------------------------------------
-Layout
--------------------------------------------------- */
 
 main {
-width: min(var(--content-width), calc(100% - 40px));
-margin: 0 auto;
-padding: 72px 0 120px;
+  width: min(820px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 72px 0 120px;
 }
 
-/* --------------------------------------------------
-Typography
--------------------------------------------------- */
+/* Typography */
 
 h1,
 h2,
@@ -68,331 +60,102 @@ h3,
 h4,
 h5,
 h6 {
-color: #fff;
-font-weight: 600;
-line-height: 1.25;
-letter-spacing: -0.025em;
+  color: var(--text);
+  line-height: 1.3;
+  font-weight: 500;
 }
 
 h1 {
-margin: 0 0 48px;
-font-size: clamp(2.2rem, 5vw, 3.2rem);
-font-weight: 600;
+  margin-bottom: 48px;
+  font-size: 2.2rem;
 }
 
 h2 {
-margin: 64px 0 24px;
-padding-top: 16px;
-font-size: 1.7rem;
-border-top: 1px solid var(--border);
+  margin-top: 64px;
+  margin-bottom: 24px;
+  font-size: 1.6rem;
 }
 
 h3 {
-margin: 48px 0 16px;
-font-size: 1.3rem;
-}
-
-h4 {
-margin: 32px 0 12px;
-font-size: 1.1rem;
+  margin-top: 48px;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
 }
 
 p {
-margin: 0 0 1.4em;
+  margin: 0 0 24px;
 }
-
-strong {
-color: #fff;
-font-weight: 600;
-}
-
-em {
-color: #ddd;
-}
-
-hr {
-height: 1px;
-margin: 56px 0;
-border: 0;
-background: var(--border);
-}
-
-/* --------------------------------------------------
-Links
--------------------------------------------------- */
 
 a {
-color: var(--link);
-text-decoration: underline;
-text-decoration-color: #555;
-text-decoration-thickness: 1px;
-text-underline-offset: 3px;
-
-transition:
-color 0.15s ease,
-text-decoration-color 0.15s ease;
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 a:hover {
-color: var(--link-hover);
-text-decoration-color: #aaa;
+  color: var(--link-hover);
 }
 
-/* --------------------------------------------------
-Lists
--------------------------------------------------- */
-
-ul,
-ol {
-margin: 0 0 1.5em;
-padding-left: 1.5em;
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 48px 0;
 }
 
-li {
-margin: 0.35em 0;
-}
-
-li > p {
-margin-bottom: 0.5em;
-}
-
-/* --------------------------------------------------
-Blockquotes
--------------------------------------------------- */
-
-blockquote {
-margin: 32px 0;
-padding: 4px 0 4px 24px;
-
-color: var(--text-muted);
-
-border-left: 2px solid #444;
-}
-
-blockquote p:last-child {
-margin-bottom: 0;
-}
-
-/* --------------------------------------------------
-Inline code
--------------------------------------------------- */
+/* Code */
 
 code {
-font-family: var(--font-mono);
-font-size: 0.88em;
+  padding: 2px 5px;
+  background: var(--code-bg);
+  border-radius: 3px;
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    Menlo,
+    monospace;
+  font-size: 0.9em;
 }
-
-:not(pre) > code {
-padding: 0.15em 0.35em;
-
-color: #ddd;
-background: #111;
-
-border: 1px solid #222;
-border-radius: 3px;
-}
-
-/* --------------------------------------------------
-Code blocks
--------------------------------------------------- */
 
 pre {
-margin: 28px 0;
-padding: 20px 22px;
-
-overflow-x: auto;
-
-color: #ddd;
-background: var(--code-bg);
-
-border: 1px solid var(--border);
-border-radius: 5px;
-
-font-size: 0.85rem;
-line-height: 1.6;
+  margin: 32px 0;
+  padding: 20px;
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
 }
 
 pre code {
-padding: 0;
-color: inherit;
-background: none;
-border: 0;
+  padding: 0;
+  background: transparent;
 }
 
-/* --------------------------------------------------
-Tables
--------------------------------------------------- */
-
-table {
-width: 100%;
-margin: 32px 0;
-
-border-collapse: collapse;
-
-font-size: 0.95rem;
-}
-
-th,
-td {
-padding: 10px 14px;
-border-bottom: 1px solid var(--border);
-text-align: left;
-}
-
-th {
-color: #fff;
-font-weight: 600;
-}
-
-td {
-color: #ccc;
-}
-
-/* --------------------------------------------------
-Images
--------------------------------------------------- */
-
-img {
-display: block;
-max-width: 100%;
-height: auto;
-margin: 32px auto;
-}
-
-/* --------------------------------------------------
-MathJax
--------------------------------------------------- */
-
-/*
-
-* Give display equations breathing room without putting
-* boxes or decoration around them.
-  */
+/* MathJax */
 
 mjx-container[display="true"] {
-margin: 32px 0 !important;
-overflow-x: auto;
-overflow-y: hidden;
-padding: 4px 0;
+  margin: 32px 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
 }
-
-/*
-
-* Keep inline mathematics aligned nicely with text.
-  */
 
 mjx-container {
-color: #fff;
+  color: var(--text);
 }
 
-/* --------------------------------------------------
-Loading / errors
--------------------------------------------------- */
+/* Status / errors */
 
 .status {
-color: var(--text-muted);
-font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 .error {
-margin-top: 32px;
-padding: 16px 20px;
-
-color: #fff;
-background: #111;
-
-border: 1px solid #444;
-border-radius: 4px;
-
-font-family: var(--font-mono);
-font-size: 0.85rem;
-line-height: 1.5;
-
-white-space: pre-wrap;
+  white-space: pre-wrap;
+  color: #d66;
 }
 
-/* --------------------------------------------------
-Selection
--------------------------------------------------- */
-
-::selection {
-background: #fff;
-color: #000;
-}
-
-/* --------------------------------------------------
-Scrollbars
--------------------------------------------------- */
-
-::-webkit-scrollbar {
-width: 8px;
-height: 8px;
-}
-
-::-webkit-scrollbar-track {
-background: #000;
-}
-
-::-webkit-scrollbar-thumb {
-background: #333;
-border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-background: #555;
-}
-
-/* --------------------------------------------------
-Mobile
--------------------------------------------------- */
-
-@media (max-width: 600px) {
-body {
-font-size: 16px;
-line-height: 1.7;
-}
-
-main {
-width: calc(100% - 28px);
-padding: 40px 0 80px;
-}
-
-h1 {
-margin-bottom: 36px;
-font-size: 2.2rem;
-}
-
-h2 {
-margin-top: 48px;
-font-size: 1.5rem;
-}
-
-h3 {
-margin-top: 36px;
-}
-
-pre {
-margin-left: -4px;
-margin-right: -4px;
-padding: 16px;
-border-radius: 3px;
-font-size: 0.8rem;
-}
-
-mjx-container[display="true"] {
-margin: 24px 0 !important;
-}
-
-table {
-display: block;
-overflow-x: auto;
-white-space: nowrap;
-}
-}
-
-/* --------------------------------------------------
-Bottm nav
--------------------------------------------------- */
+/* Chapter navigation */
 
 .chapter-nav {
   margin-top: 80px;
@@ -409,3 +172,58 @@ Bottm nav
 .chapter-nav a:hover {
   color: var(--text);
 }
+
+/* Theme toggle */
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+
+  padding: 8px 12px;
+
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+
+  font: inherit;
+  font-size: 0.85rem;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-muted);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  main {
+    width: calc(100% - 32px);
+    padding: 48px 0 80px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 36px;
+  }
+
+  h2 {
+    margin-top: 48px;
+    font-size: 1.4rem;
+  }
+
+  .theme-toggle {
+    top: 12px;
+    right: 12px;
+  }
+}
+```
