@@ -389,3 +389,23 @@ overflow-x: auto;
 white-space: nowrap;
 }
 }
+
+/* --------------------------------------------------
+Bottm nav
+-------------------------------------------------- */
+
+.chapter-nav {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.chapter-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.chapter-nav a:hover {
+  color: var(--text);
+}
