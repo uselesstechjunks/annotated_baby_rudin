@@ -1,19 +1,5 @@
-# TrainTrack
+# Annotated Baby Rudin
 
-https://uselesstechjunks.github.io/traintrack/index.html
+https://uselesstechjunks.github.io/annotated_baby_rudin/index.html
 
-Short notes site that organizes preparation for a large-scale model training role (research engineer / scientist focused on training, objectives, data, and evaluation rather than product shipping). It is an imperfect guide aimed at senior-level research engineering roles centered on training large models at scale.
-
-## What this covers
-- Ideal roles: research engineer/scientist (LLMs/foundation models), sometimes applied scientist or senior ML engineer if the focus is on training.
-- Core mission: design, train, evaluate, and improve models directly via objectives, data, and optimization systems; success measured by model-level metrics.
-- Day-to-day: training-time interventions, model quality improvement, evaluation/diagnostics, and systems that exist to support research.
-- Evaluation expectations: ability to improve existing models, explain metric movement, work at scale, and translate fuzzy goals into concrete training changes.
-- Resume stance: emphasize training-scale work, objectives, data decisions, offline metrics, and experiment reasoning; de-emphasize product metrics and feature delivery.
-
-## How to view
-- Open `docs/index.html` locally to browse the notes; markdown files live in `docs/content/` and render through `docs/view.html`.
-- Key files:
-  - `READLIST.md`: curated sources by tier, numbered with “Why” notes.
-  - `QUESTIONS.md`: question-first prompts aligned to each tier.
-  - `SYLLABUS.md`: condensed prep map tying the sections together.
+My filler notes for Baby Rudin (Principles of Mathematical Analysis by Walter D. Rudin)
