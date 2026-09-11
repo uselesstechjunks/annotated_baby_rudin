@@ -1,21 +1,17 @@
 ```js
 (function () {
-  const savedTheme = localStorage.getItem("theme");
+  const STORAGE_KEY = "theme";
 
-  if (savedTheme === "light") {
-    document.documentElement.classList.add("light");
-  }
+  function applyTheme(theme) {
+    document.documentElement.classList.toggle(
+      "light",
+      theme === "light"
+    );
 
-  function initThemeToggle() {
     const button = document.getElementById("theme-toggle");
 
-    if (!button) {
-      return;
-    }
-
-    function updateButton() {
-      const isLight =
-        document.documentElement.classList.contains("light");
+    if (button) {
+      const isLight = theme === "light";
 
       button.textContent = isLight ? "☾ Dark" : "☀ Light";
 
@@ -26,32 +22,37 @@
           : "Switch to light mode"
       );
     }
+  }
 
-    updateButton();
+  function getSavedTheme() {
+    return localStorage.getItem(STORAGE_KEY) === "light"
+      ? "light"
+      : "dark";
+  }
+
+  function init() {
+    applyTheme(getSavedTheme());
+
+    const button = document.getElementById("theme-toggle");
+
+    if (!button) {
+      return;
+    }
 
     button.addEventListener("click", function () {
-      const isLight =
-        document.documentElement.classList.contains("light");
+      const currentTheme = getSavedTheme();
+      const nextTheme =
+        currentTheme === "light" ? "dark" : "light";
 
-      if (isLight) {
-        document.documentElement.classList.remove("light");
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.documentElement.classList.add("light");
-        localStorage.setItem("theme", "light");
-      }
-
-      updateButton();
+      localStorage.setItem(STORAGE_KEY, nextTheme);
+      applyTheme(nextTheme);
     });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      initThemeToggle
-    );
+    document.addEventListener("DOMContentLoaded", init);
   } else {
-    initThemeToggle();
+    init();
   }
 })();
 ```
