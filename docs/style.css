@@ -1,16 +1,391 @@
-:root{--bg:#0c1220;--bg-2:#0f172a;--surface:#111827;--surface-2:#1f2937;--fg:#e5e7eb;--muted:#94a3b8;--accent:#22d3ee;--border:#1f2937;--code-bg:#0b1220}
-body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:radial-gradient(circle at 10% 20%, rgba(34,211,238,0.09), transparent 25%),radial-gradient(circle at 85% 10%, rgba(236,72,153,0.08), transparent 22%),linear-gradient(130deg, var(--bg), var(--bg-2)); color:var(--fg); margin:0; padding:2.5rem; min-height:100vh}
-main{max-width:900px;margin:0 auto}
-nav{max-width:900px;margin:0 auto 1rem}
-h1{margin:0 0 .5rem}
-p{color:var(--muted)}
-ul{padding-left:1.2rem}
-li{margin-bottom:.4rem}
-article.markdown-body{max-width:900px;margin:0 auto;background:var(--surface);padding:1.5rem;border-radius:12px;border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,0.35)}
-article.markdown-body h1,article.markdown-body h2,article.markdown-body h3,article.markdown-body h4,article.markdown-body h5,article.markdown-body h6{color:var(--fg)}
-code{background:var(--code-bg);padding:.15rem .35rem;border-radius:4px;border:1px solid var(--border)}
-pre code{display:block;padding:1rem;border-radius:10px}
-a{color:var(--accent);text-decoration:none;font-weight:600}
-a:hover{color:#67e8f9;text-shadow:0 0 12px rgba(103,232,249,0.35)}
-hr{border:0;border-top:1px solid var(--border);margin:1.5rem 0}
-@media (max-width:640px){body{padding:1.25rem}article.markdown-body{padding:1rem}}
+:root {
+--bg: #000;
+--text: #f2f2f2;
+--text-muted: #999;
+--text-dim: #666;
+--border: #252525;
+--code-bg: #111;
+--link: #fff;
+--link-hover: #aaa;
+
+--content-width: 820px;
+--font-body:
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+Helvetica,
+Arial,
+sans-serif;
+--font-mono:
+"SFMono-Regular",
+Consolas,
+"Liberation Mono",
+Menlo,
+monospace;
+}
+
+/* --------------------------------------------------
+Base
+-------------------------------------------------- */
+
+html {
+background: var(--bg);
+color-scheme: dark;
+}
+
+body {
+margin: 0;
+padding: 0;
+
+background: var(--bg);
+color: var(--text);
+
+font-family: var(--font-body);
+font-size: 17px;
+line-height: 1.75;
+
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
+}
+
+/* --------------------------------------------------
+Layout
+-------------------------------------------------- */
+
+main {
+width: min(var(--content-width), calc(100% - 40px));
+margin: 0 auto;
+padding: 72px 0 120px;
+}
+
+/* --------------------------------------------------
+Typography
+-------------------------------------------------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+color: #fff;
+font-weight: 600;
+line-height: 1.25;
+letter-spacing: -0.025em;
+}
+
+h1 {
+margin: 0 0 48px;
+font-size: clamp(2.2rem, 5vw, 3.2rem);
+font-weight: 600;
+}
+
+h2 {
+margin: 64px 0 24px;
+padding-top: 16px;
+font-size: 1.7rem;
+border-top: 1px solid var(--border);
+}
+
+h3 {
+margin: 48px 0 16px;
+font-size: 1.3rem;
+}
+
+h4 {
+margin: 32px 0 12px;
+font-size: 1.1rem;
+}
+
+p {
+margin: 0 0 1.4em;
+}
+
+strong {
+color: #fff;
+font-weight: 600;
+}
+
+em {
+color: #ddd;
+}
+
+hr {
+height: 1px;
+margin: 56px 0;
+border: 0;
+background: var(--border);
+}
+
+/* --------------------------------------------------
+Links
+-------------------------------------------------- */
+
+a {
+color: var(--link);
+text-decoration: underline;
+text-decoration-color: #555;
+text-decoration-thickness: 1px;
+text-underline-offset: 3px;
+
+transition:
+color 0.15s ease,
+text-decoration-color 0.15s ease;
+}
+
+a:hover {
+color: var(--link-hover);
+text-decoration-color: #aaa;
+}
+
+/* --------------------------------------------------
+Lists
+-------------------------------------------------- */
+
+ul,
+ol {
+margin: 0 0 1.5em;
+padding-left: 1.5em;
+}
+
+li {
+margin: 0.35em 0;
+}
+
+li > p {
+margin-bottom: 0.5em;
+}
+
+/* --------------------------------------------------
+Blockquotes
+-------------------------------------------------- */
+
+blockquote {
+margin: 32px 0;
+padding: 4px 0 4px 24px;
+
+color: var(--text-muted);
+
+border-left: 2px solid #444;
+}
+
+blockquote p:last-child {
+margin-bottom: 0;
+}
+
+/* --------------------------------------------------
+Inline code
+-------------------------------------------------- */
+
+code {
+font-family: var(--font-mono);
+font-size: 0.88em;
+}
+
+:not(pre) > code {
+padding: 0.15em 0.35em;
+
+color: #ddd;
+background: #111;
+
+border: 1px solid #222;
+border-radius: 3px;
+}
+
+/* --------------------------------------------------
+Code blocks
+-------------------------------------------------- */
+
+pre {
+margin: 28px 0;
+padding: 20px 22px;
+
+overflow-x: auto;
+
+color: #ddd;
+background: var(--code-bg);
+
+border: 1px solid var(--border);
+border-radius: 5px;
+
+font-size: 0.85rem;
+line-height: 1.6;
+}
+
+pre code {
+padding: 0;
+color: inherit;
+background: none;
+border: 0;
+}
+
+/* --------------------------------------------------
+Tables
+-------------------------------------------------- */
+
+table {
+width: 100%;
+margin: 32px 0;
+
+border-collapse: collapse;
+
+font-size: 0.95rem;
+}
+
+th,
+td {
+padding: 10px 14px;
+border-bottom: 1px solid var(--border);
+text-align: left;
+}
+
+th {
+color: #fff;
+font-weight: 600;
+}
+
+td {
+color: #ccc;
+}
+
+/* --------------------------------------------------
+Images
+-------------------------------------------------- */
+
+img {
+display: block;
+max-width: 100%;
+height: auto;
+margin: 32px auto;
+}
+
+/* --------------------------------------------------
+MathJax
+-------------------------------------------------- */
+
+/*
+
+* Give display equations breathing room without putting
+* boxes or decoration around them.
+  */
+
+mjx-container[display="true"] {
+margin: 32px 0 !important;
+overflow-x: auto;
+overflow-y: hidden;
+padding: 4px 0;
+}
+
+/*
+
+* Keep inline mathematics aligned nicely with text.
+  */
+
+mjx-container {
+color: #fff;
+}
+
+/* --------------------------------------------------
+Loading / errors
+-------------------------------------------------- */
+
+.status {
+color: var(--text-muted);
+font-size: 0.9rem;
+}
+
+.error {
+margin-top: 32px;
+padding: 16px 20px;
+
+color: #fff;
+background: #111;
+
+border: 1px solid #444;
+border-radius: 4px;
+
+font-family: var(--font-mono);
+font-size: 0.85rem;
+line-height: 1.5;
+
+white-space: pre-wrap;
+}
+
+/* --------------------------------------------------
+Selection
+-------------------------------------------------- */
+
+::selection {
+background: #fff;
+color: #000;
+}
+
+/* --------------------------------------------------
+Scrollbars
+-------------------------------------------------- */
+
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+
+::-webkit-scrollbar-track {
+background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+background: #333;
+border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+
+/* --------------------------------------------------
+Mobile
+-------------------------------------------------- */
+
+@media (max-width: 600px) {
+body {
+font-size: 16px;
+line-height: 1.7;
+}
+
+main {
+width: calc(100% - 28px);
+padding: 40px 0 80px;
+}
+
+h1 {
+margin-bottom: 36px;
+font-size: 2.2rem;
+}
+
+h2 {
+margin-top: 48px;
+font-size: 1.5rem;
+}
+
+h3 {
+margin-top: 36px;
+}
+
+pre {
+margin-left: -4px;
+margin-right: -4px;
+padding: 16px;
+border-radius: 3px;
+font-size: 0.8rem;
+}
+
+mjx-container[display="true"] {
+margin: 24px 0 !important;
+}
+
+table {
+display: block;
+overflow-x: auto;
+white-space: nowrap;
+}
+}
