@@ -227,4 +227,14 @@ mjx-container {
     right: 12px;
   }
 }
+
+html.light body {
+  background: white !important;
+  color: black !important;
+}
+
+html:not(.light) body {
+  background: black !important;
+  color: white !important;
+}
 ```
