@@ -9,20 +9,6 @@
 
   <link rel="stylesheet" href="style.css">
 
-  <!--
-    Configure MathJax before loading it.
-
-    This enables both the familiar Markdown-style delimiters:
-
-        $...$       inline mathematics
-        $$...$$     display mathematics
-
-    and the LaTeX delimiters:
-
-        \(...\)     inline mathematics
-        \[...\]     display mathematics
-  -->
-
   <script>
     window.MathJax = {
       tex: {
@@ -37,8 +23,6 @@
       }
     };
   </script>
-
-  <!-- MathJax -->
 
   <script
     defer
@@ -55,38 +39,25 @@
 
   <script type="module">
 
-    /*
-     * ------------------------------------------------------------
-     * Configuration
-     * ------------------------------------------------------------
-     */
-
     const content = document.getElementById("content");
 
 
     /*
-     * ------------------------------------------------------------
-     * Determine which Markdown file to display
-     * ------------------------------------------------------------
+     * Get the Markdown file from the URL.
      *
-     * Examples:
+     * Example:
      *
-     *   view.html
-     *   view.html?file=chapter1.md
-     *   view.html?file=chapter2.md
+     * view.html?file=chapter1.md
      */
 
     function getFileName() {
       const params = new URLSearchParams(window.location.search);
-
       return params.get("file") || "READLIST.md";
     }
 
 
     /*
-     * ------------------------------------------------------------
-     * Error handling
-     * ------------------------------------------------------------
+     * Display an error on the page.
      */
 
     function showError(message, error = null) {
@@ -109,12 +80,7 @@
 
 
     /*
-     * ------------------------------------------------------------
-     * Load Marked
-     * ------------------------------------------------------------
-     *
-     * Marked is loaded as an ES module rather than through a
-     * separate <script> tag. This avoids script-order races.
+     * Load Marked as an ES module.
      */
 
     async function loadMarked() {
@@ -128,9 +94,7 @@
 
 
     /*
-     * ------------------------------------------------------------
-     * Load Markdown
-     * ------------------------------------------------------------
+     * Load the Markdown file.
      */
 
     async function loadMarkdown(fileName) {
@@ -153,9 +117,7 @@
 
 
     /*
-     * ------------------------------------------------------------
-     * Markdown → HTML
-     * ------------------------------------------------------------
+     * Convert Markdown to HTML.
      */
 
     function renderMarkdown(marked, markdown) {
@@ -168,59 +130,39 @@
 
 
     /*
-     * ------------------------------------------------------------
-     * MathJax
-     * ------------------------------------------------------------
-     *
-     * MathJax 4 performs asynchronous startup work.
-     *
-     * Waiting for startup.promise guarantees that
-     * typesetPromise is available before we call it.
+     * Wait for MathJax and typeset the page.
      */
 
     async function typesetMath(element) {
 
       if (!window.MathJax) {
-
-        throw new Error(
-          "MathJax failed to load."
-        );
+        throw new Error("MathJax failed to load.");
       }
-
 
       if (window.MathJax.startup?.promise) {
-
         await window.MathJax.startup.promise;
       }
-
 
       if (
         typeof window.MathJax.typesetPromise !== "function"
       ) {
-
         throw new Error(
           "MathJax loaded, but typesetPromise is unavailable."
         );
       }
-
 
       await window.MathJax.typesetPromise([element]);
     }
 
 
     /*
-     * ------------------------------------------------------------
-     * Page title
-     * ------------------------------------------------------------
-     *
-     * Use the first Markdown H1 as the browser tab title.
+     * Set the browser tab title from the first H1.
      */
 
     function updateTitle() {
 
       const heading =
         content.querySelector("h1");
-
 
       if (heading) {
 
@@ -231,9 +173,7 @@
 
 
     /*
-     * ------------------------------------------------------------
-     * Back to contents navigation
-     * ------------------------------------------------------------
+     * Add the "Back to contents" link.
      */
 
     function addContentsLink() {
@@ -241,8 +181,7 @@
       const nav =
         document.createElement("nav");
 
-      nav.className =
-        "chapter-nav";
+      nav.className = "chapter-nav";
 
       nav.setAttribute(
         "aria-label",
@@ -266,9 +205,7 @@
 
 
     /*
-     * ------------------------------------------------------------
-     * Main rendering pipeline
-     * ------------------------------------------------------------
+     * Main rendering pipeline.
      */
 
     async function main() {
@@ -276,12 +213,7 @@
       const fileName =
         getFileName();
 
-
       try {
-
-        /*
-         * Load Marked and the Markdown file in parallel.
-         */
 
         const [marked, markdown] =
           await Promise.all([
@@ -299,24 +231,22 @@
 
 
         /*
-         * Update browser title from the H1.
+         * Update page title.
          */
 
         updateTitle();
 
 
         /*
-         * HTML → rendered mathematics
+         * HTML → MathJax
          */
 
         await typesetMath(content);
 
 
         /*
-         * Add navigation after the chapter content.
-         *
-         * This means the link appears at the very bottom
-         * of every chapter automatically.
+         * Add navigation AFTER the chapter
+         * has been rendered.
          */
 
         addContentsLink();
@@ -330,10 +260,6 @@
       }
     }
 
-
-    /*
-     * Start rendering.
-     */
 
     main();
 
