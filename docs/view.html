@@ -7,137 +7,28 @@
 
   <title>Notes</title>
 
-  <style>
-    :root {
-      --content-width: 900px;
-      --text: #222;
-      --muted: #666;
-      --border: #ddd;
-      --code-bg: #f6f6f6;
-      --link: #0645ad;
-    }
+  <link rel="stylesheet" href="style.css">
 
-    html {
-      scroll-behavior: smooth;
-    }
+  <!-- MathJax -->
 
-    body {
-      margin: 0;
-      padding: 2rem 1rem 4rem;
-      color: var(--text);
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      line-height: 1.6;
-      background: #fff;
-    }
-
-    main {
-      max-width: var(--content-width);
-      margin: 0 auto;
-    }
-
-    a {
-      color: var(--link);
-    }
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      line-height: 1.25;
-      margin-top: 1.8em;
-    }
-
-    h1 {
-      margin-top: 0;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-
-    pre {
-      overflow-x: auto;
-      padding: 1rem;
-      border-radius: 6px;
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-    }
-
-    code {
-      font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Monaco,
-        Consolas,
-        "Liberation Mono",
-        monospace;
-    }
-
-    :not(pre) > code {
-      padding: 0.15em 0.3em;
-      border-radius: 3px;
-      background: var(--code-bg);
-    }
-
-    blockquote {
-      margin-left: 0;
-      padding-left: 1rem;
-      border-left: 4px solid var(--border);
-      color: var(--muted);
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 1.5rem 0;
-    }
-
-    th,
-    td {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--border);
-      text-align: left;
-    }
-
-    th {
-      background: var(--code-bg);
-    }
-
-    .status {
-      color: var(--muted);
-      padding: 2rem 0;
-    }
-
-    .error {
-      color: #900;
-      padding: 1rem;
-      border: 1px solid #d99;
-      background: #fee;
-      border-radius: 6px;
-      white-space: pre-wrap;
-    }
-  </style>
-
-  <!--
-    MathJax must be loaded before the script which uses it.
-    Both scripts are deferred, so they execute in document order.
-  -->
-
-  <script
-    defer
-    src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js">
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"]
+        ],
+        displayMath: [
+          ["$$", "$$"],
+          ["\\[", "\\]"]
+        ]
+      }
+    };
   </script>
 
   <script
     defer
-    src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js">
+    src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js">
   </script>
 
 </head>
@@ -147,130 +38,128 @@
     <div class="status">Loading…</div>
   </main>
 
-  <!--
-    A deferred external script is used here deliberately.
+  <script type="module">
+    const content = document.getElementById("content");
 
-    This guarantees that:
-      1. MathJax has been loaded
-      2. marked has been loaded
-      3. this script runs afterwards
-  -->
+    function getFileName() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("file") || "READLIST.md";
+    }
 
-  <script defer>
-    (() => {
-      "use strict";
+    function showError(message, error = null) {
+      console.error(message, error);
 
-      const content = document.getElementById("content");
+      content.innerHTML = "";
 
-      function getFileName() {
-        const params = new URLSearchParams(window.location.search);
-        return params.get("file") || "READLIST.md";
+      const element = document.createElement("div");
+      element.className = "error";
+
+      element.textContent =
+        error instanceof Error
+          ? `${message}\n\n${error.message}`
+          : message;
+
+      content.appendChild(element);
+    }
+
+    async function loadMarked() {
+      /*
+       * Load marked directly as an ES module.
+       *
+       * This avoids relying on a separate <script> tag having
+       * initialized window.marked before our code runs.
+       */
+      const module = await import(
+        "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js"
+      );
+
+      return module.marked;
+    }
+
+    async function loadMarkdown(fileName) {
+      const url = `content/${encodeURIComponent(fileName)}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(
+          `Could not load "${fileName}" (${response.status} ${response.statusText})`
+        );
       }
 
-      function showError(message, error = null) {
-        console.error(message, error);
+      return response.text();
+    }
 
-        content.innerHTML = "";
+    function renderMarkdown(marked, markdown) {
+      return marked.parse(markdown, {
+        gfm: true,
+        breaks: false
+      });
+    }
 
-        const element = document.createElement("div");
-        element.className = "error";
-        element.textContent =
-          error instanceof Error
-            ? `${message}\n\n${error.message}`
-            : message;
-
-        content.appendChild(element);
+    async function typesetMath(element) {
+      if (!window.MathJax) {
+        throw new Error("MathJax failed to load.");
       }
 
-      async function loadMarkdown(fileName) {
+      /*
+       * MathJax 4 performs some initialization asynchronously.
+       * Wait for it before asking it to typeset the page.
+       */
+      if (window.MathJax.startup?.promise) {
+        await window.MathJax.startup.promise;
+      }
+
+      if (typeof window.MathJax.typesetPromise !== "function") {
+        throw new Error(
+          "MathJax loaded, but typesetPromise is unavailable."
+        );
+      }
+
+      await window.MathJax.typesetPromise([element]);
+    }
+
+    function updateTitle() {
+      const heading = content.querySelector("h1");
+
+      if (heading) {
+        document.title = `${heading.textContent.trim()} — Notes`;
+      }
+    }
+
+    async function main() {
+      const fileName = getFileName();
+
+      try {
         /*
-         * The content directory is relative to view.html.
-         *
-         * encodeURIComponent prevents a query parameter from turning
-         * into an unintended path such as ../../something.
+         * Load both dependencies and the Markdown.
          */
-        const url = `content/${encodeURIComponent(fileName)}`;
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error(
-            `Could not load "${fileName}" (${response.status} ${response.statusText})`
-          );
-        }
-
-        return response.text();
-      }
-
-      function renderMarkdown(markdown) {
-        /*
-         * marked is loaded from the UMD build above.
-         */
-        if (!window.marked || typeof window.marked.parse !== "function") {
-          throw new Error("Marked.js failed to load.");
-        }
+        const [marked, markdown] = await Promise.all([
+          loadMarked(),
+          loadMarkdown(fileName)
+        ]);
 
         /*
-         * Parse Markdown normally.
-         *
-         * We deliberately do NOT manipulate $$...$$ here.
-         * MathJax should receive the original TeX delimiters.
+         * Convert Markdown → HTML.
          */
-        return window.marked.parse(markdown, {
-          gfm: true,
-          breaks: false
-        });
-      }
+        content.innerHTML = renderMarkdown(marked, markdown);
 
-      async function typesetMath(element) {
-        if (!window.MathJax) {
-          throw new Error("MathJax failed to load.");
-        }
+        updateTitle();
 
         /*
-         * MathJax 4 loads some of its components asynchronously.
-         * Waiting for startup.promise makes this robust even when
-         * fonts/extensions have not finished loading yet.
+         * HTML → rendered mathematics.
          */
-        if (window.MathJax.startup?.promise) {
-          await window.MathJax.startup.promise;
-        }
+        await typesetMath(content);
 
-        if (typeof window.MathJax.typesetPromise !== "function") {
-          throw new Error(
-            "MathJax loaded, but typesetPromise is unavailable."
-          );
-        }
-
-        await window.MathJax.typesetPromise([element]);
+      } catch (error) {
+        showError(
+          `Unable to render "${fileName}".`,
+          error
+        );
       }
+    }
 
-      function updateTitle() {
-        const heading = content.querySelector("h1");
-
-        if (heading) {
-          document.title = `${heading.textContent.trim()} — Notes`;
-        }
-      }
-
-      async function main() {
-        const fileName = getFileName();
-
-        try {
-          const markdown = await loadMarkdown(fileName);
-
-          content.innerHTML = renderMarkdown(markdown);
-
-          updateTitle();
-
-          await typesetMath(content);
-        } catch (error) {
-          showError(`Unable to render "${fileName}".`, error);
-        }
-      }
-
-      main();
-    })();
+    main();
   </script>
 
 </body>
