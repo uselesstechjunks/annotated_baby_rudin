@@ -1,19 +1,24 @@
-```html
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Notes Index</title>
+
   <script>
     const savedTheme = localStorage.getItem("theme");
+
     if (savedTheme === "light") {
       document.documentElement.classList.add("light");
     }
   </script>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
   <button
     id="theme-toggle"
     class="theme-toggle"
@@ -22,11 +27,15 @@
   >
     ☀ Light
   </button>
+
   <main>
+
     <p>
       This blog contains my filler notes for Principles of Mathematical Analysis by Walter D. Rudin.
     </p>
+
     <h4>Table of Content</h4>
+
     <div>
       <ul>
         <li>
@@ -36,12 +45,16 @@
         </li>
       </ul>
     </div>
+
     <hr>
+
     <p>
       Files are served from <code>/docs/content/</code>.
     </p>
+
   </main>
+
   <script src="theme.js"></script>
+
 </body>
 </html>
-```
