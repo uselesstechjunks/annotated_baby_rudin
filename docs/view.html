@@ -275,20 +275,19 @@
 
         updateTitle();
 
-
-        /*
-         * HTML → MathJax
-         */
-
-        await typesetMath(content);
-
-
         /*
          * Add navigation AFTER the chapter
          * has been rendered.
          */
 
         addContentsLink();
+
+
+        /*
+         * HTML → MathJax
+         */
+
+        await typesetMath(content);
 
       } catch (error) {
 
